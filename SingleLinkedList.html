@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="layui/css/layui.css" />
+		<script src="js/jquery-1.11.0.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		
+		<style >
+			.smallTable{
+				width:600px;
+			}
+			.layui-main{
+				text-align: center;
+				padding: 10px;
+				border: 3px solid;
+				border-radius:6px;
+				background:aqua;
+				font-size:30px;
+				height:50px;
+			}
+			.returnBtn{
+				position:fixed;
+				left:0px;
+				bottom:0px;
+			}
+
+		</style>
+		
+	</head>
+	<body>
+		
+		<div id="app">
+			
+			<a class="layui-btn layui-btn-danger returnBtn" href="./index.html">Ret to home pg</a>
+			
+			<div>
+				<h2 class="layui-main"> Single LinkedList Demo (6.14.2020)</h2>
+				<br />
+			</div>
+			
+			<div class="layui-inline">
+				<label>LinkedList Type</label>
+				<div class="layui-input-inline" style="width: 100px;">
+					<select name="type" class="layui-select">
+						<option value="Singly">Singly</option>
+						<option value="Doubly">Doubly</option>
+					</select>
+				</div>
+			</div>
+			
+			<!--reset-->
+			<div class="layui-inline">
+   				<label>Reset Linked List</label>
+			    <div class="layui-input-inline" style="width: 100px;">
+			      <button class="layui-btn" type="button" id="maxSize"
+			      	@click="resetList">reset</button>
+			    </div>
+  			</div>
+			
+			<br />
+			<br />
+
+			<!--insertion-->
+			<div class="layui-inline layui-form">
+				
+				<div class="layui-form-item">
+				<label for="toAddName">Name</label>
+				<input type="text" class="toAddName" v-model="toAddName"/>
+				</div>
+				
+				<div class="layui-form-item">
+				<label for="toAddNickname">Nickname</label>
+				<input type="text" class="toAddNickname" v-model="toAddNickname"/>
+				</div>
+				
+				
+				<div class="layui-form-item">
+				<label for="toAddIndex">No</label>
+				<input type="text" class="toAddIndex" v-model="toAddIndex"/>
+				</div>
+				<!--<button class="layui-btn" @click="addNode({
+						no:listLength+1,
+						name:'anotherNode',
+						nickname:'anotherNode',
+						next:null
+					})">add to linked list</button>-->
+				<button class="layui-btn layui-btn-normal" @click="addNodeByOrder(
+					linkedListNode(toAddNo, toAddName, toAddNickname, null)
+					)">add to linked list</button>
+			</div>
+			
+			<!--update-->
+			<div class="layui-inline layui-form">
+				<div class="layui-form-item">
+					<label for="toUpdateName">Name</label>
+					<input type="text" class="toUpdateName" v-model="toUpdateName"/>
+				</div>
+				<div class="layui-form-item">
+					<label for="toUpdateNickname">Nickname</label>
+					<input type="text" class="toUpdateNickname" v-model="toUpdateNickname"/>
+				</div>
+				
+				<div class="layui-form-item">
+					<label for="toUpdateIndex">No</label>
+					<input type="text" class="toUpdateIndex" v-model="toUpdateIndex"/>
+				</div>
+				
+				<button class="layui-btn layui-btn-warm" @click="updateNodeByNo(
+					linkedListNode(toUpdateIndex, toUpdateName, toUpdateNickname, null)
+					)">update el in linked list</button>
+			</div>
+			
+			<!--delete-->
+			<div class="layui-inline layui-form">
+				<div class="layui-form-item">
+					<label for="toDeleteIndex">No</label>
+					<input type="text" class="toDeleteIndex " v-model="toDeleteIndex"/>
+				</div>
+				<button class="layui-btn layui-btn-danger" @click="deleteNodeByNo(
+					toDeleteIndex
+					)">delete el in linked list</button>
+			</div>
+			
+			<!--other data-->
+			<table class="layui-table smallTable">
+	  			<colgroup>
+	    		<col width="20">
+	    		<col width="150">
+	    		</colgroup>
+    			<thead>
+    				<th>Property</th>
+    				<th>Value</th>
+    			</thead>
+    			<tbody>
+    				<tr>
+    					<td>Linked list length</td>
+    					<td>{{listLength}}</td>
+    				</tr>
+    				<tr>
+    					<td>Computed length</td>
+    					<td>{{computedLength}}</td>
+    				</tr>
+    				<tr>
+    					<td>Head node</td>
+    					<td>{{headNode}}</td>
+    				</tr>
+    				<tr>
+    					<td>last inserted Index</td>
+    					<td>{{lastInsertedIndex}}</td>
+    				</tr>
+    				<!--<tr v-for="n in listLength">
+    					<td>{{getNode(n)}}</td>
+    					<td>Another node</td>
+    				</tr>-->
+    			</tbody>
+    		</table>
+    		
+    		
+			<!--
+            	作者：offline
+            	时间：2020-06-14
+            	描述：Visuals are here
+            -->
+		
+			<!--data visualization-->
+			<ul id="visualBlock" :style="visualBlock">
+				<div v-for="n in listLength" >
+					<li>
+						<div v-if="n === lastInsertedIndex && inserting" class="layui-anim layui-anim-rotate" :style="highlightedVisual">			
+							{{getNode(n).no}}:{{getNode(n).name}}
+							<br />
+							{{getNode(n).nickname}}
+						</div>
+						<div v-else-if="n === lastInsertedIndex && updating" class="layui-anim layui-anim-rotate" :style="highlightedUpdateVisual">			
+							{{getNode(n).no}}:{{getNode(n).name}}
+							<br />
+							{{getNode(n).nickname}}
+						</div>
+						<div v-else :style="visualBorder">			
+							{{getNode(n).no}}:{{getNode(n).name}}
+							<br />
+							{{getNode(n).nickname}}
+						</div>
+						
+					</li>
+					<i class="layui-icon layui-icon-download-circle" style="font-size: 30px; color: #1E9FFF; position:relative;top:0px;;left:50px">next</i>  
+				</div>
+			</ul>
+
+		</div>
+			
+		<script>
+			// 1. 创建Vue石烈对象
+			var vm = new Vue({
+				el: "#app",
+				data:{
+					inserting:true,
+					updating:false,
+					lastInsertedIndex:1,
+					highlighted:"highlighted",
+					toAddIndex:3,
+					toAddName:'zhangfei',
+					toAddNickname:'deyun',
+					toUpdateIndex:3,
+					toUpdateName:'zhangfei',
+					toUpdateNickname:'deyun',
+					toDeleteIndex: 1,
+					headNode: {
+						no:1,
+						name:'headNode',
+						nickname:'mobboss',
+						next:null
+					},
+					listLength: 1,
+					visualBorder:{
+						background:"lightgreen",
+						
+						border:"1px solid",
+						height:"39px",
+						width:"120px",
+						"text-align": "center",
+						"border-radius": "13px",
+						color:"gray"
+					},
+					highlightedVisual:{
+						background:"lightblue",
+						
+						border:"1px solid",
+						height:"39px",
+						width:"120px",
+						"text-align": "center",
+						"border-radius": "13px",
+						color:"gray"
+					},
+					highlightedUpdateVisual:{
+						background:"yellow",
+						
+						border:"1px solid",
+						height:"39px",
+						width:"120px",
+						"text-align": "center",
+						"border-radius": "13px",
+						color:"gray"
+					},
+					visualBlock:{
+						position:"absolute",
+						right:"50px",
+						top:"100px"
+					},
+				},
+				computed:{
+					toAddNo:function(){
+						return this.toAddIndex;
+					},
+					computedLength:function(){
+						var cur = this.headNode;
+						
+						var loop = 0;
+						
+						while(cur != null){
+							cur = cur.next;
+							loop++;
+						}
+						
+						return loop;
+					}
+				},
+				methods:{
+					getNode(n){
+						if(n < 1){
+							return null;
+						}
+						if(n===1){
+							return this.headNode;
+						}
+						var currentNode = this.headNode;
+						
+						for(var i = 1; i < n; i++){
+							if(!(currentNode.next === null)){
+								currentNode = currentNode.next;
+								
+							}else{
+								return null;
+							}
+						}
+						
+						return currentNode;
+					},
+					resetList(){
+						this.headNode = {
+						no:1,
+						name:'headNode',
+						nickname:'mobboss',
+						next:null
+					};
+						this.listLength = 1;
+						this.lastInsertedIndex = 1;
+					},
+					updateNodeByNo(heroNode){
+						
+						var currentNode = this.headNode;
+						var currentNo = currentNode.no;
+						
+						
+						while(parseInt(currentNo) != parseInt(heroNode.no)){
+							if(currentNode.next === null){
+								break;
+							}
+							else{
+								currentNode = currentNode.next;
+								currentNo = currentNode.no;
+							}
+						}
+						
+						
+						
+						if(parseInt(currentNo) === parseInt(heroNode.no)){
+							currentNode.name = heroNode.name;
+							currentNode.nickname = heroNode.nickname;
+							this.inserting = false;
+							this.updating = true;
+						}else{
+							//nothing to do, can't find
+							alert('no element exists');
+						}
+						
+						
+					},
+					deleteNodeByNo(no){
+						
+						this.inserting = false;
+						this.updating = false;
+							
+						if(this.listLength === 1){
+							alert("cannot delete head!")
+							return;
+						}
+						console.log(this.headNode.no, no)
+						if(parseInt(this.headNode.no) === parseInt(no)){
+							this.headNode = this.headNode.next;
+							this.listLength--;
+							return;
+						}
+						
+						var prevNode = this.headNode;
+						
+						var currentNode = this.headNode.next;
+						var currentNo = currentNode.no;
+						
+						while(parseInt(currentNo) != parseInt(no)){
+							if(currentNode.next === null){
+								break;
+							}
+							else{
+								prevNode = currentNode;
+								
+								currentNode = currentNode.next;
+								currentNo = currentNode.no;
+								
+							}
+						}
+						
+						console.log('here')
+						console.log(currentNo, no);
+						if(parseInt(currentNo) === parseInt(no)){
+							
+							prevNode.next = prevNode.next.next;
+							this.listLength--;
+						}else{
+							//nothing to do, can't find
+							alert('no element exists');
+						}
+						
+						
+					},
+					addNodeByOrder(heroNode){
+						this.inserting = true;
+						this.updating = false;
+						
+						var loop = 1;
+						
+						
+						if(parseInt(heroNode.no) <= parseInt(this.headNode.no)){
+							console.log('here')
+							heroNode.next = this.headNode;
+							this.headNode = heroNode;
+							this.listLength++;
+							this.lastInsertedIndex = loop;
+							return
+						}
+						if(this.listLength === 1){
+							this.headNode.next = heroNode;
+							
+							this.listLength++;
+							this.lastInsertedIndex = loop + 1;
+							return
+						}
+						
+						var prevNode = this.headNode;
+						var currentNode = this.headNode.next;
+						
+						var prevNo = prevNode.no;
+						var currentNo = currentNode.no;
+						
+						
+//						console.log(currentNo, heroNode.no, prevNo);
+						var heroNo = parseInt(heroNode.no);
+						
+						while(!( parseInt(currentNo) >= heroNo && heroNo >= parseInt(prevNo))){
+							
+							if(currentNode.next === null){
+								break;
+							}
+							else{
+								prevNo = currentNo;
+								prevNode = currentNode;
+								
+								currentNode = currentNode.next;
+								currentNo = currentNode.no;
+	//							console.log(loop);
+								loop++;
+							}
+							
+						}
+						
+						if(parseInt(currentNo) >= heroNo && heroNo >= parseInt(prevNo)){
+							var temp = prevNode.next;
+							prevNode.next = heroNode;
+							heroNode.next = temp;
+						}
+						else{
+							currentNode.next = heroNode;
+							loop++;
+						}
+						
+						this.listLength++;
+						this.lastInsertedIndex = loop + 1;
+						
+					},
+					addNode(heroNode){
+						//this.headNode.next = this.linkedListNode(1,"hi", "name");
+						var currentNode = this.headNode;
+//						var loop = 0;
+						
+						while(!(currentNode.next === null)){
+							currentNode = currentNode.next;
+//							console.log(loop);
+//							loop++;
+						}
+						
+						currentNode.next = heroNode;
+						this.listLength++;
+					},
+					linkedListNode(no, name, nickname){
+						return {
+							no: no,
+							name: name,
+							nickname:nickname,
+							next: null
+						}
+					}
+				}
+			});
+			
+			
+			
+			
+
+		</script>
+		
+		
+	</body>
+</html>
