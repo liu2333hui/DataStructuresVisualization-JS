@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	</head>
+	<body>
+		
+		
+		<div id="app">
+			
+			<ul id="visualBlock" >
+				<li v-for="(num,index) in arr" >
+					{{index}}
+				</li>
+			</ul>
+		
+			
+		</div>
+		
+		
+		<script>
+			
+			
+		var vm = new Vue({
+		    el: "#app",
+		    data:{
+		    	//队列的重要数据
+		    arr: new Array(10), //数组队列
+		 	front: -1, //队列头指针（出点）
+		 	rear: -1,  //队列尾指针 (如点)
+			
+			//其他参数
+			customerNo: 0,
+			arrSize: 10
+			}
+		})
+
+
+
+		</script>
+	</body>
+</html>

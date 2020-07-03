@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>ArrayStack Calculator Demo</title>
+		<link rel="stylesheet" href="layui/css/layui.css" />
+		<script src="js/jquery-1.11.0.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		
+		<style>
+			.smallTable{
+				width:600px;
+			}
+			.layui-main{
+				text-align: center;
+				padding: 10px;
+				border: 3px solid;
+				border-radius:6px;
+				background:aqua;
+				font-size:30px;
+				height:50px;
+			}
+			.returnBtn{
+				position:fixed;
+				left:0px;
+				bottom:0px;
+			}
+			.calculatorForm{
+				border:black solid 3px;
+				padding:15px;
+				border-radius:12px;
+				font-size:20px;
+				color:cornflowerblue;
+			}
+			.resultClass{
+				font-size:30px;
+				color:gold;
+				
+			}
+			
+			/*CSS for the stacks*/
+			li{
+				border-radius:12px;
+			}
+			li > div{
+				border-radius:12px;
+				font-size:20px;
+				text-align:center;
+				
+			}
+		</style>
+		
+	</head>
+	<body>
+		
+		
+		<div id="numberStack">
+			
+			<a class="layui-btn layui-btn-danger returnBtn" href="./index.html">Ret to home pg</a>
+				
+			<div>
+				<h2 class="layui-main  layui-col-lg-offset1 layui-col-md-offset1 layui-col-sm-offset1 layui-col-xs-offset1
+					layui-col-lg10 layui-col-md10 layui-col-sm10 layui-col-xs10
+					">{{type}} ArrayStack Demo (6.16.2020)</h2>
+				<br />
+			</div>
+			
+			<!--<div class="layui-inline">
+				<label>Queue Type</label>
+				<div class="layui-input-inline" style="width: 100px;">
+					<select name="type" class="layui-select" v-model="type">
+						<option value="linear">linear</option>
+						<option value="Wrap-around">wrap</option>
+					</select>
+				</div>
+			</div>-->
+			<!--<label for="maxSize">Queue Max Size </label>
+			<input class="layui-input-block" 
+				type="text" id="maxSize" v-model="maxSizeDesired"/>
+			-->
+<!--			
+			<div class="layui-inline">
+   				<label>Queue Max Size</label>
+			    <div class="layui-input-inline" style="width: 100px;">
+			      <input class="layui-input" 
+				type="text" id="maxSize" v-model="maxSizeDesired"/>
+			    </div>
+  			</div>-->
+			
+			
+			<!--<p>maxSize: {{maxSize}}</p>
+			<p>isFull: {{isFull}}</p>
+			<p>isEmpty: {{isEmpty}}</p>
+			<p>arr: {{arr}}</p>
+			<p>out: {{out}}</p>
+			<p>headQueue: {{headQueue}}</p>
+			<p>number of Elements: {{numEl}}</p>-->
+			
+			<!--<div class="layui-inline layui-form">
+				<div class="layui-form-item">
+				<label for="toPush">to Push Value</label>
+				<input type="text" class="toPush" v-model="toPush" size="5"/>
+				</div>
+				<button class="layui-btn" @click="pushStack(toPush)">Push</button>
+			
+						<button class="layui-btn" @click="popStack()">Pop</button>
+
+			</div>-->
+			
+			
+
+			
+			
+			<!--<table class="layui-table smallTable">
+	  			<colgroup>
+	    		<col width="20">
+	    		<col width="150">
+	    		</colgroup>
+    			<thead>
+    				<th>Property</th>
+    				<th>Value</th>
+    			</thead>
+    			<tbody>
+    				<tr>
+    					<td>Stack's maxsize</td>
+    					<td>{{maxSize}}</td>
+    				</tr>
+    				<tr>
+    					<td>Stack full</td>
+    					<td>{{isFull}}</td>
+    				</tr>
+    				<tr>
+    					<td>Stack Empty</td>
+    					<td>{{isEmpty}}</td>
+    				</tr>
+    				<tr>
+    					<td>The Stack</td>
+    					<td>{{arr}}</td>
+    				</tr>
+    				<tr>
+    					<td>Popped out element</td>
+    					<td>{{out}}</td>
+    				</tr>
+    				<tr>
+    					<td>Top of Stack</td>
+    					<td>{{StackTop}}</td>
+    				</tr>
+    				<tr>
+    					<td>number of elements</td>
+    					<td>{{numEl}}</td>
+    				</tr>
+    			</tbody>
+    		</table>-->
+    		
+    		
+			<ul id="visualBlock" :style="visualBlock">
+				<li v-if :style="visualBorder" v-for="(num,index) in arr" >
+					<div v-if="elToDraw(index)" :style="arrElStyle">
+					{{num}}
+					</div>
+				</li>
+			</ul>
+			
+			
+			<ul :style="visualBlockRear">
+				<li :style="visual" :key="index" v-for="(num,index) in arr">
+					<!--{{num}}-->
+					<!--{{index}}-->
+					<i v-if="index-1===rear" class="layui-icon">Top&#xe623;</i>
+				</li>
+				<li :style="visual">
+					<i v-if="rear===maxSize-1" class="layui-icon">Top&#xe623;</i>
+				</li>
+			</ul>
+			
+		</div>
+		
+		
+		<div id="operStack">
+			
+			
+			<!--<div class="layui-inline">
+   				<label>Queue Max Size</label>
+			    <div class="layui-input-inline" style="width: 100px;">
+			      <input class="layui-input" 
+				type="text" id="maxSize" v-model="maxSizeDesired"/>
+			    </div>
+  			</div>-->
+			
+			<!--<div class="layui-inline layui-form">
+				<div class="layui-form-item">
+				<label for="toPush">to Push Value</label>
+				<input type="text" class="toPush" v-model="toPush" size="5"/>
+				</div>
+				<button class="layui-btn" @click="pushStack(toPush)">Push</button>
+			
+						<button class="layui-btn" @click="popStack()">Pop</button>
+
+			</div>-->
+			
+    		
+    		
+			<ul id="visualBlock" :style="visualBlock">
+				<li v-if :style="visualBorder" v-for="(num,index) in arr" >
+					<div v-if="elToDraw(index)" :style="arrElStyle">
+					{{num}}
+					</div>
+				</li>
+			</ul>
+			
+			
+			<ul :style="visualBlockRear">
+				<li :style="visual" :key="index" v-for="(num,index) in arr">
+					<!--{{num}}-->
+					<!--{{index}}-->
+					<i v-if="index-1===rear" class="layui-icon">Top&#xe623;</i>
+				</li>
+				<li :style="visual">
+					<i v-if="rear===maxSize-1" class="layui-icon">Top&#xe623;</i>
+				</li>
+			</ul>
+			
+		</div>
+		
+		<div id="calculator">
+			
+			<div class="calculatorForm
+				layui-inline layui-form
+				 layui-col-lg-offset0 layui-col-md-offset0 layui-col-sm-offset0">
+				<div class="layui-form-item">
+				<label for="expression">enter your desired calculation:</label>
+				<input type="text" class="expression" v-model="expression" size="20"/>
+				</div>
+				
+				<div class="layui-form-item">
+					<label for="">Result:</label>
+					<span :class="{resultClass:finishedCalc}">{{result}}</span>
+				</div>
+				
+				<!--<div class="layui-form-item">
+					<label for="selectType">select calculator parser type</label>
+					<select class="layui-select selectType" style="display:block" name="typeCalc" v-model="typeCalc">
+					<option value="infix">infix (no parenthesis)</option>
+					<option value="postfix">postfix</option>
+					</select>
+				</div>-->
+					
+					<br />
+				
+					<button class="layui-btn" @click="automate()">
+						<span v-if="automating">pause</span>
+						<span v-else-if="!automating">automate</span>
+					</button>
+			
+					<button class="layui-btn" @click="reset()">Reset</button>
+			
+				</div>
+			
+			<br />
+
+
+			
+			
+			
+			<table class="layui-table smallTable">
+	  			<colgroup>
+	    		<col width="20">
+	    		<col width="150">
+	    		</colgroup>
+    			<thead>
+    				<th>Property</th>
+    				<th>Value</th>
+    			</thead>
+    			<tbody>
+    				<!--<tr>
+    					<td>priority(expression)</td>
+    					<td>{{priority(expression)}}</td>
+    				</tr>
+    				<tr>
+    					<td>isOper(expression</td>
+    					<td>{{isOper(expression)}}</td>
+    				</tr>-->
+    				<!--<tr>
+    					<td>binaryOpCalc(1, 2, expression)</td>
+    					<td>{{binaryOpCalc(1, 2, expression)}}</td>
+    				</tr>-->
+    				<tr>
+    					<td>(expression)</td>
+    					<td>{{expression}}</td>
+    				</tr>
+    				<tr>
+    					<td>parseStringIntoArray(expression)</td>
+    					<td>{{parsedExpr}}</td>
+    				</tr>
+    				<tr>
+    					<td>automating</td>
+    					<td>{{automating}}</td>
+    				</tr>
+    				<tr>
+    					<td>copyParsedExpr</td>
+    					<td>{{copyParsedExpr}}</td>
+    				</tr>
+    				<tr>
+    					<td>typeCalc</td>
+    					<td>{{typeCalc}}</td>
+    				</tr>
+    				<tr>
+    					<td>postfixArr</td>
+    					<td>{{postfixArr}}</td>
+    				</tr>
+					<!--<tr>
+    					<td>isAlphaNum(alphanum)</td>
+    					<td>{{isAlphaNum(expression[0])}}</td>
+    				</tr>-->
+    				<tr>
+    					<td>isNum(alphanum)</td>
+    					<td>{{isNum(expression)}}</td>
+    				</tr>
+    			</tbody>
+    		</table>
+    		
+		</div>
+		
+		<script>
+			
+			var calculator = new Vue({
+				el: "#calculator",
+				data:{
+					message:"hi theres",
+					debugMode:true,
+					expression:"1+2",
+					automateTimer: null,
+					automating:false,
+//					parsedExpr:[],
+					//Variables used for automation process
+					automateIndex:0,
+					copyParsedExpr: null,
+					automationState: 'parse', //or 'calculate' for postfix
+					typeCalc: 'postfix',
+					postfixArr: null,
+					result: null,
+					finishedCalc: false
+				},
+				computed:{
+					parsedExpr:function(){
+						return this.parseStringIntoArray(this.expression);
+					}
+				},
+				watch:{
+					parsedExpr(newName, oldName){
+//						this.parsedExpr = this.parseStringIntoArray(this.expression)
+						this.resetNoStackEmpty();
+					},
+					typeCalc(newName, oldName){
+						this.resetNoStackEmpty();
+					}
+				},
+//				mounted(){
+//					this.reset();
+//				},
+				methods:{
+					//Method that the automation calls every
+					//timed interval (1s by default)
+					automateMethod(){
+						
+						//Checks before parsing
+						if(this.copyParsedExpr === 'invalid numerical expression'){
+							this.result = ('not a valid expression')
+							
+							return
+						}else{
+							this.result = ''
+						}
+//						if(this.typeCalc === 'infix'){
+//							if(this.automationState === 'parse'){
+//								this.copyParsedExpr.shift()
+//							}
+//						}else{
+	
+						
+						//Calculation machine
+						switch(this.automationState){
+							case 'parse':
+								//get next parse
+								var nextEl = this.copyParsedExpr.shift();
+								console.log(nextEl,nextEl===undefined)
+								
+								//If no more elements
+								if(nextEl === undefined){
+									this.automationState = 'calc'
+									break;
+								}
+								
+								//Is a number ...
+								if(this.isNum(nextEl)){
+									NumberStack.pushStack(nextEl);
+								}
+								//Is a function like sin, tan, cos
+								else if(this.isFunctionalOper(nextEl)){
+									OperStack.pushStack(nextEl)
+								}
+								else if(nextEl === '('){
+									OperStack.pushStack(nextEl);
+								}
+								else if(nextEl === ')'){
+									this.automationState = 'rightParen';
+								}
+								//Is a binary operator
+								else{
+//									var status = this.priority(nextEl);
+									var operTop = OperStack.StackTop;
+//									console.log(OperStack.StackTop)
+									if(operTop === undefined){
+										OperStack.pushStack(nextEl);
+										console.log("stacktop null")
+									}
+									else if(this.priority(operTop) > this.priority(nextEl)){
+										OperStack.popStack();
+										NumberStack.pushStack(operTop);
+										OperStack.pushStack(nextEl);
+									}else{
+										
+										OperStack.pushStack(nextEl);
+									}
+									//OperStack.pushStack(nextEl);
+								}
+								break;
+							case 'rightParen':
+								//Perform stack operation flushing
+								//Due to the sub-group enclosed by
+								//the parenthesis
+								if(OperStack.isEmpty){
+									this.result = ('missing left paren')
+									return
+								}
+								
+								if(OperStack.StackTop !== '('){
+									var operTop = OperStack.StackTop;
+									OperStack.popStack();
+									NumberStack.pushStack(operTop);
+								}else{
+									OperStack.popStack();
+									this.automationState = 'parse';
+									
+								}
+								
+								break;
+							case 'calc':
+								//Flush the stack
+								if(OperStack.StackTop !== undefined){
+									var operTop = OperStack.StackTop;
+									OperStack.popStack();
+									NumberStack.pushStack(operTop);
+								}else{
+									this.postfixArr = NumberStack.arr
+									
+									//End result
+									if(NumberStack.numEl === 1){
+										this.finishedCalc = true;
+										this.result = NumberStack.StackTop
+										return
+									}
+									
+									
+									
+									//Find a binary operator
+									var foundOp = false;
+									var foundI = null;
+									var foundEl = null;
+									
+									for(var i = 0; i < this.postfixArr.length; i++){
+										var el = this.postfixArr[i];
+//										console.log(el)
+										if(el === null){
+											break;
+										}
+										else if(this.isOper(el) || this.isFunctionalOper(el)){
+											foundI = i;
+											foundEl = el;
+											break;
+										}else{
+											//Do nothing, we continue searching
+										}
+									}
+									
+									
+									//There is no binary operator
+									//Check if there is an unary operator
+									if(foundI === null){
+//										var foundIFunc = null;
+										//Check if there are any functional operators
+//										for(var i = 0; i < this.postfixArr.length; i++){
+//											var el = this.postfixArr[i];
+//											if(el === null){
+//												break;
+//											}
+//											else if (this.isFunctionalOper(el) && 
+//													this.isNum(this.postfixArr[i-1])){
+//												foundIFunc = i;
+//												break;
+//											}
+//										}
+										
+//										if(foundIFunc === null){
+											this.result = 'no operator! incorrect syntax'
+											return
+//										}else{
+//											//Process the unary operation
+//											var el1 = parseFloat(this.postfixArr[foundIFunc-1]);
+//											var oper = this.postfixArr[foundIFunc];
+//											var res = this.funcOpCalc(el1, oper);
+//											this.postfixArr[foundIFunc] = res.toString();
+//											
+//											this.postfixArr = this.postfixArr.splice(foundIFunc-1,1)
+//	//										this.postfixArr.splice()
+//											NumberStack.numEl -= 1;
+//											NumberStack.rear -= 1;
+//											
+//										}
+											
+										
+									}
+									else{
+										
+										if(this.isOper(foundEl)){
+											
+											var foundIPrevPrev = foundI - 2;
+											var foundIPrev = foundI - 1;
+										
+										
+											var el1 = this.postfixArr[foundIPrevPrev]
+											var el2 = this.postfixArr[foundIPrev]
+											
+											//check exceptions
+											if(!this.isNum(el1) || !this.isNum(el2)){
+												this.result = "cannot process function with non-num input"
+												return
+											}
+											
+											
+											var oper = this.postfixArr[foundI]
+											var res = this.binaryOpCalc(el1, el2, oper)
+											this.postfixArr[foundI] = res.toString()
+											
+											this.postfixArr = this.postfixArr.splice(foundIPrevPrev,2)
+	//										this.postfixArr.splice()
+											NumberStack.numEl -= 2;
+											NumberStack.rear -= 2;
+											
+										}else if(this.isFunctionalOper(foundEl)){
+											
+											var foundIFunc = foundI;
+											//Process the unary operation
+											var el1 = this.postfixArr[foundIFunc-1];
+											
+											//check exceptions
+											if(!this.isNum(el1)){
+												this.result = "cannot process function with non-num input"
+												return
+											}
+											
+											
+											var oper = this.postfixArr[foundIFunc];					
+											
+											var res = this.funcOpCalc(el1, oper);
+											this.postfixArr[foundIFunc] = res.toString();
+											
+											this.postfixArr = this.postfixArr.splice(foundIFunc-1,1)
+	//										this.postfixArr.splice()
+											NumberStack.numEl -= 1;
+											NumberStack.rear -= 1;
+										
+										}
+										
+										
+									
+									}
+									
+								}
+								
+								break;
+						}
+						
+//						}
+						
+					},
+					//Handler for when the reset button is pressed
+					reset(){
+						this.expression = ''
+						
+						NumberStack.emptyStack()
+						OperStack.emptyStack()
+						
+						this.resetNoStackEmpty();
+					},
+					resetNoStackEmpty(){
+						
+						this.automating = false;
+						console.log("don't automate")
+						clearInterval(this.automateTimer )
+						this.automateTimer  = null
+						
+						this.copyParsedExpr = null
+						
+						//Extra features
+						this.finishedCalc = false;
+						this.result = '';
+					},
+					//Handler for Wwhen the automate button is pressed
+					automate(){
+						
+						//Check some exceptional cases
+						//No expression
+						if(this.expression === ''){
+							alert('no express entered')
+							return
+						}
+						
+						//a reset
+						//|| this.copyParsedExpr.length === 0
+						if(this.copyParsedExpr === null ){
+							NumberStack.emptyStack()
+							OperStack.emptyStack()
+							this.automationState = 'parse';
+							this.copyParsedExpr = this.parsedExpr
+						}
+						
+						//
+						
+						this.automating = !this.automating
+						
+//						this.automating = true;
+						
+						if(this.automating){
+							console.log("automate")
+							this.automateTimer = setInterval(
+								function(){
+									
+//									calculator.automateTestMethod()
+									calculator.automateMethod()
+								}
+							,1000)
+							
+						}else{
+							
+							console.log("don't automate")
+							clearInterval(this.automateTimer )
+							this.automateTimer  = null
+						}
+					},
+					/*
+					 * Put the parser here to calculate
+					 * the numerical expression
+					 */
+					
+					automateTestMethod(){
+//						if(!NumberStack.isFull){
+//							NumberStack.pushStack("￥");
+//							
+//						}
+//						
+//						if(!OperStack.isFull){
+//							OperStack.pushStack("^_^");
+//							
+//						}
+						NumberStack.pushStack
+						
+						
+					},
+					parseStringIntoArray(stringExpression){
+						var s = stringExpression.toString()
+						
+						var arr = new Array();
+//						arr[0] = 1;
+//						arr[10] = 1;
+						
+						var arrIndex = 0;
+						var index = 0;
+//						console.log(s[11] === undefined)
+						
+						//Not yet end of line
+						var state = 0;
+						
+//						alert(this.isOper("("));
+						
+						//States = 0 (search for operation)
+						//States = 1 (search for number/letter)
+						while(s[index] != undefined){
+							
+							if(s[index] === ' '){
+								index++;
+								continue;
+							}
+							
+							 if(this.isOper(s[index])){
+								arr[arrIndex] = s[index]
+								index++;
+								arrIndex++;
+							}
+							else if(!this.isAlphaNumDot(s[index])){
+								
+								//index++;
+								return "invalid numerical expression"
+							}
+							else{
+								var alphanum = ""
+								while(s[index] != undefined && this.isAlphaNumDot(s[index])){
+									alphanum = alphanum+s[index];
+									index++;
+								}
+								
+								//Must be a number or decimal
+//								if(this.isNum(alphanum)){
+//									
+//									arr[arrIndex] = alphanum;
+//									arrIndex++;
+//								}else{
+//									return "invalid numerical expression"
+//								}
+
+								//V2.0 with functional operators
+								arr[arrIndex] = alphanum;
+								arrIndex++;
+								
+								
+							}
+							
+						
+//							arr[arrIndex] = s[index]
+//								index++;
+//								arrIndex++;
+						
+						}
+							
+						return arr;
+					},
+
+					priority(oper){
+						if(oper === '(' || oper === ')'){
+							return 0
+						}
+						else if(oper === '^' || oper === '%'){
+							return 2
+						}
+						else if(oper === '*' || oper === '/' ){
+							return 1
+						}
+						else if(oper === '+' || oper === '-'){
+							return 0
+						}else{
+							return -1
+						}
+						
+					},
+					isAlphaNum(alphanum){
+						var regex = new RegExp("[a-zA-Z0-9]");
+						return regex.test(alphanum);
+					},
+					isAlphaNumDot(alphanum){
+						var regex = new RegExp("[.a-zA-Z0-9\\u4e00-\\u9fa5]");
+						return regex.test(alphanum);
+					},
+					isNum(num){
+						if(num === ""){
+							return false
+						}
+						if(num.length === 0){
+							return false
+						}
+						var regex = new RegExp("([0-9]+.[0-9]+)|[0-9]+");
+						
+						var match = num.match(regex)
+						if(match){
+							return match[0].length === num.length;
+						}
+						else{
+							return false
+						}
+//						if(match.length < 2){
+//							return false;
+//						}
+//						else{	
+//							return match[0].length === num.length;
+//						}
+						return match
+					},
+					isOper(oper){
+						return this.priority(oper) >= 0;
+					},
+					isFunctionalOper(oper){
+						var isFuncOp = false;
+						
+						switch(oper.toLowerCase()){
+							case 'sin':
+							case 'cos':
+							case 'tan':
+								isFuncOp = true;
+								break;
+						}
+						
+						return isFuncOp;
+					},
+					funcOpCalc(Number, oper){
+						var res = 0.0
+						var num = parseFloat(Number)
+						
+						console.log(oper, num/180*Math.PI,
+										Math.sin(num*Math.PI/180.0))
+							
+						switch(oper){
+							//In degrees?
+							case 'sin':
+								res = Math.sin(num*Math.PI/180.0)
+								break;
+							case 'cos':
+								res = Math.cos(num*Math.PI/180.0)
+								break;
+							case 'tan':
+								res = Math.tan(num*Math.PI/180.0)
+								break;
+						}
+						
+						return res
+					},
+					binaryOpCalc(number1, number2, oper){
+						var res = 0.0
+						var num1 = parseFloat(number1)
+						var num2 = parseFloat(number2)
+						switch(oper){
+							case '+':
+								res = num1 + num2;
+								break;
+							case '-':
+								res = num1 - num2;
+								break;
+							case '*':
+								res = num1*num2;
+								break;
+							case '/':
+								if(num2 === 0){
+									console.log("divide by zero not allowed!");
+									return null;
+								}
+								
+								res = num1/num2;
+								break;
+							//V2.0 more symbols
+							case '^':
+								res = Math.pow(num1,num2);
+								break;
+							case '%':
+								res = num1 % num2;
+								break;
+							default:
+								console.log("invalid operation!");
+								break;
+						}
+						
+						return res;
+					}
+				}
+			})
+			
+			// 1. 创建Vue石烈对象
+			var NumberStack = new Vue({
+				el: "#numberStack",
+				data:{
+					arrElStyle:{
+						background:"lightgreen",
+						height:"100%"
+					},
+					toPush:"10",
+					message:"hi there",
+					maxSizeDesired: 15,
+//					maxSize: 1,
+					front: -1,
+					rear: -1,
+					arr: new Array(1),
+					out: null,
+					type: "linear",
+					numEl: 0,
+					visual:{
+//						background:"green",
+						height:"41px",
+						width:"60px"
+					},
+					visualBorder:{
+						border:"1px solid",
+						height:"39px",
+						width:"60px"
+					},
+					visualBlock:{
+						position:"absolute",
+						right:"300px",
+						top:"100px"
+					},
+					visualBlockRear:{
+						position:"absolute",
+						right:"400px",
+						top:"90px"
+					},
+					visualBlockFront:{
+						position:"absolute",
+						right:"200px",
+						top:"90px"
+					},
+					visualBlockArrows:{
+						position:"absolute",
+						right:"300px",
+						top:"90px"
+					}
+//					isEmpty: true,
+//					isFull: false
+				},
+				computed:{
+					StackTop:function(){
+						return this.arr[this.rear];
+					},
+					maxSize: function(){
+						var temp = Math.max(1,this.maxSizeDesired);
+						temp = Math.min(this.maxSizeDesired, 100);
+						var toReturn = temp==''?1:Math.floor(temp)
+						this.arr = new Array(toReturn);
+						this.front = -1;
+						this.rear = -1;
+						this.numEl = 0;
+						return toReturn;
+					},
+					isFull: function(){
+//						alert("isEmpty");
+						if(this.type==="linear"){
+							return this.rear === this.maxSize - 1;
+						}
+						else{
+//							if(this.front === -1){
+//								return this.rear === this.maxSize - 1;
+//							}
+//							else{
+//								return (this.rear + 1) % this.maxSize === this.front
+//							}
+							return this.numEl === this.arr.length;
+							
+						}
+						
+					},
+					isEmpty: function(){
+						if(this.type==="linear"){
+							return this.rear===this.front;
+						}else{
+							return this.numEl === 0;
+						}
+						
+					}
+					
+				},
+				methods:{
+					emptyStack(){
+						this.arr = new Array(this.maxSize);
+						this.front = -1;
+						this.rear = -1;
+						this.numEl = 0;
+					},
+					pushStack(el){
+						//console.log("here");
+						if(el === null){
+							return
+						}
+						
+						//el = parseInt(el);
+						
+						if(this.isFull){
+							alert("stack is full!");
+							return
+						}
+						
+						this.arr[++this.rear] = el;
+						this.numEl++;
+					},
+					popStack(){
+						if(this.isEmpty){
+							alert("stack is empty!")
+							return
+						}
+						
+						
+						this.out = this.arr[this.rear]
+						this.arr[this.rear] = null
+						this.rear--
+						this.numEl--
+						
+					},
+					elToDraw(index){
+						const {type, front, rear, arr} = this
+						
+						if(type === "linear"){
+							return front <= index-1 && index-1 < rear
+						}
+						else{
+							if(this.isEmpty){
+								return false
+							}
+							else if(this.isFull){
+								return true
+							}
+							else if(front < rear){
+								return front <= index-1 && index-1 < rear
+							}
+							else{
+								return front <= index-1 || index-1 < rear
+							}
+						}
+					}
+				
+				}
+			})
+
+
+		// 1. 创建Vue石烈对象
+			var OperStack = new Vue({
+				el: "#operStack",
+				data:{
+					arrElStyle:{
+						background:"lightblue",
+						height:"100%"
+					},
+					toPush:"10",
+					maxSizeDesired: 15,
+//					maxSize: 1,
+					front: -1,
+					rear: -1,
+					arr: new Array(1),
+					out: null,
+					type: "linear",
+					numEl: 0,
+					visual:{
+//						background:"green",
+						height:"41px",
+						width:"60px"
+					},
+					visualBorder:{
+						border:"1px solid",
+						height:"39px",
+						width:"60px"
+					},
+					visualBlock:{
+						position:"absolute",
+						right:"100px",
+						top:"100px"
+					},
+					visualBlockRear:{
+						position:"absolute",
+						right:"200px",
+						top:"90px"
+					},
+					visualBlockFront:{
+						position:"absolute",
+						right:"200px",
+						top:"90px"
+					},
+					visualBlockArrows:{
+						position:"absolute",
+						right:"300px",
+						top:"90px"
+					}
+//					isEmpty: true,
+//					isFull: false
+				},
+				computed:{
+					StackTop:function(){
+						return this.arr[this.rear];
+					},
+					maxSize: function(){
+						var temp = Math.max(1,this.maxSizeDesired);
+						temp = Math.min(this.maxSizeDesired, 100);
+						var toReturn = temp==''?1:Math.floor(temp)
+						this.arr = new Array(toReturn);
+						this.front = -1;
+						this.rear = -1;
+						this.numEl = 0;
+						return toReturn;
+					},
+					isFull: function(){
+//						alert("isEmpty");
+						if(this.type==="linear"){
+							return this.rear === this.maxSize - 1;
+						}
+						else{
+//							if(this.front === -1){
+//								return this.rear === this.maxSize - 1;
+//							}
+//							else{
+//								return (this.rear + 1) % this.maxSize === this.front
+//							}
+							return this.numEl === this.arr.length;
+							
+						}
+						
+					},
+					isEmpty: function(){
+						if(this.type==="linear"){
+							return this.rear===this.front;
+						}else{
+							return this.numEl === 0;
+						}
+						
+					},
+					headQueue: function(){
+						if(this.isEmpty){
+							return null;
+						}
+						else{	
+							return this.arr[this.front + 1];
+						}
+					}
+					
+				},
+				methods:{
+					emptyStack(){
+						this.arr = new Array(this.maxSize);
+						this.front = -1;
+						this.rear = -1;
+						this.numEl = 0;
+					},
+					pushStack(el){
+						//console.log("here");
+						if(el === null){
+							return
+						}
+						
+						//el = parseInt(el);
+						
+						if(this.isFull){
+							alert("stack is full!");
+							return
+						}
+						
+						this.arr[++this.rear] = el;
+						this.numEl++;
+					},
+					popStack(){
+						if(this.isEmpty){
+							alert("stack is empty!")
+							return
+						}
+						
+						
+						this.out = this.arr[this.rear]
+						this.arr[this.rear] = null
+						this.rear--
+						this.numEl--
+						
+					},
+					elToDraw(index){
+						const {type, front, rear, arr} = this
+						
+						if(type === "linear"){
+							return front <= index-1 && index-1 < rear
+						}
+						else{
+							if(this.isEmpty){
+								return false
+							}
+							else if(this.isFull){
+								return true
+							}
+							else if(front < rear){
+								return front <= index-1 && index-1 < rear
+							}
+							else{
+								return front <= index-1 || index-1 < rear
+							}
+						}
+					}
+				
+				}
+			})
+
+		
+			
+		</script>
+		
+		
+	</body>
+</html>

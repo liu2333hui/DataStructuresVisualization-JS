@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>ArrayStack Demo</title>
+		<link rel="stylesheet" href="layui/css/layui.css" />
+		<script src="js/jquery-1.11.0.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		
+		<style>
+			.smallTable{
+				width:600px;
+			}
+			.layui-main{
+				text-align: center;
+				padding: 10px;
+				border: 3px solid;
+				border-radius:6px;
+				background:aqua;
+				font-size:30px;
+				height:50px;
+			}
+			.returnBtn{
+				position:fixed;
+				left:0px;
+				bottom:0px;
+			}
+		</style>
+		
+	</head>
+	<body>
+		
+		<div id="app">
+			
+			<a class="layui-btn layui-btn-danger returnBtn" href="./index.html">Ret to home pg</a>
+				
+			<div>
+				<h2 class="layui-main">{{type}} ArrayStack Demo (6.16.2020)</h2>
+				<br />
+			</div>
+			
+			<!--<div class="layui-inline">
+				<label>Queue Type</label>
+				<div class="layui-input-inline" style="width: 100px;">
+					<select name="type" class="layui-select" v-model="type">
+						<option value="linear">linear</option>
+						<option value="Wrap-around">wrap</option>
+					</select>
+				</div>
+			</div>-->
+			<!--<label for="maxSize">Queue Max Size </label>
+			<input class="layui-input-block" 
+				type="text" id="maxSize" v-model="maxSizeDesired"/>
+			-->
+			
+			<div class="layui-inline">
+   				<label>ArrayStack Max Size</label>
+			    <div class="layui-input-inline" style="width: 100px;">
+			      <input class="layui-input" 
+				type="text" id="maxSize" v-model="maxSizeDesired"/>
+			    </div>
+  			</div>
+			
+			
+			<!--<p>maxSize: {{maxSize}}</p>
+			<p>isFull: {{isFull}}</p>
+			<p>isEmpty: {{isEmpty}}</p>
+			<p>arr: {{arr}}</p>
+			<p>out: {{out}}</p>
+			<p>headQueue: {{headQueue}}</p>
+			<p>number of Elements: {{numEl}}</p>-->
+			
+			<div class="layui-inline layui-form">
+				<div class="layui-form-item">
+				<label for="toPush">to Push Value</label>
+				<input type="text" class="toPush" v-model="toPush" size="5"/>
+				</div>
+				<button class="layui-btn" @click="pushStack(toPush)">Push</button>
+			
+						<button class="layui-btn" @click="popStack()">Pop</button>
+			<!--<button v-if="type==='linear'" class="layui-btn" @click="flush()">Flush</button>
+				-->
+			</div>
+			
+			
+
+			
+			
+			<table class="layui-table smallTable">
+	  			<colgroup>
+	    		<col width="20">
+	    		<col width="150">
+	    		</colgroup>
+    			<thead>
+    				<th>Property</th>
+    				<th>Value</th>
+    			</thead>
+    			<tbody>
+    				<tr>
+    					<td>Stack's maxsize</td>
+    					<td>{{maxSize}}</td>
+    				</tr>
+    				<tr>
+    					<td>Stack full</td>
+    					<td>{{isFull}}</td>
+    				</tr>
+    				<tr>
+    					<td>Stack Empty</td>
+    					<td>{{isEmpty}}</td>
+    				</tr>
+    				<tr>
+    					<td>The Stack</td>
+    					<td>{{arr}}</td>
+    				</tr>
+    				<tr>
+    					<td>Popped out element</td>
+    					<td>{{out}}</td>
+    				</tr>
+    				<tr>
+    					<td>Top of Stack</td>
+    					<td>{{StackTop}}</td>
+    				</tr>
+    				<tr>
+    					<td>number of elements</td>
+    					<td>{{numEl}}</td>
+    				</tr>
+    			</tbody>
+    		</table>
+    		
+    		
+			<ul id="visualBlock" :style="visualBlock">
+				<li v-if :style="visualBorder" v-for="(num,index) in arr" >
+					<div v-if="elToDraw(index)" :style="arrElStyle">
+					{{num}}
+					</div>
+				</li>
+			</ul>
+			
+			
+			<ul :style="visualBlockRear">
+				<li :style="visual" :key="index" v-for="(num,index) in arr">
+					<!--{{num}}-->
+					<!--{{index}}-->
+					<i v-if="index-1===rear" class="layui-icon">Top&#xe623;</i>
+				</li>
+				<li :style="visual">
+					<i v-if="rear===maxSize-1" class="layui-icon">Top&#xe623;</i>
+				</li>
+			</ul>
+			
+		</div>
+		
+		<script>
+			// 1. 创建Vue石烈对象
+			var vm = new Vue({
+				el: "#app",
+				data:{
+					arrElStyle:{
+						background:"lightgreen",
+						height:"100%"
+					},
+					toPush:"10",
+					message:"hi there",
+					customerNo: 0,
+					maxSizeDesired: 10,
+//					maxSize: 1,
+					front: -1,
+					rear: -1,
+					arr: new Array(1),
+					out: null,
+					type: "linear",
+					numEl: 0,
+					visual:{
+//						background:"green",
+						height:"41px",
+						width:"60px"
+					},
+					visualBorder:{
+						border:"1px solid",
+						height:"39px",
+						width:"60px"
+					},
+					visualBlock:{
+						position:"absolute",
+						right:"300px",
+						top:"100px"
+					},
+					visualBlockRear:{
+						position:"absolute",
+						right:"400px",
+						top:"90px"
+					},
+					visualBlockFront:{
+						position:"absolute",
+						right:"200px",
+						top:"90px"
+					},
+					visualBlockArrows:{
+						position:"absolute",
+						right:"300px",
+						top:"90px"
+					}
+//					isEmpty: true,
+//					isFull: false
+				},
+				computed:{
+					StackTop:function(){
+						return this.arr[this.rear];
+					},
+					maxSize: function(){
+						var temp = Math.max(1,this.maxSizeDesired);
+						temp = Math.min(this.maxSizeDesired, 100);
+						var toReturn = temp==''?1:Math.floor(temp)
+						this.arr = new Array(toReturn);
+						this.front = -1;
+						this.rear = -1;
+						this.customerNo = 0;
+						this.numEl = 0;
+						return toReturn;
+					},
+					isFull: function(){
+//						alert("isEmpty");
+						if(this.type==="linear"){
+							return this.rear === this.maxSize - 1;
+						}
+						else{
+//							if(this.front === -1){
+//								return this.rear === this.maxSize - 1;
+//							}
+//							else{
+//								return (this.rear + 1) % this.maxSize === this.front
+//							}
+							return this.numEl === this.arr.length;
+							
+						}
+						
+					},
+					isEmpty: function(){
+						if(this.type==="linear"){
+							return this.rear===this.front;
+						}else{
+							return this.numEl === 0;
+						}
+						
+					},
+					headQueue: function(){
+						if(this.isEmpty){
+							return null;
+						}
+						else{	
+							return this.arr[this.front + 1];
+						}
+					}
+					
+				},
+				methods:{
+					pushStack(el){
+						console.log("here");
+						if(el === null){
+							return
+						}
+						
+						//el = parseInt(el);
+						
+						if(this.isFull){
+							alert("stack is full!");
+							return
+						}
+						
+						this.arr[++this.rear] = el;
+						this.customerNo++;
+						this.numEl++;
+					},
+					popStack(){
+						if(this.isEmpty){
+							alert("stack is empty!")
+							return
+						}
+						
+						
+						this.out = this.arr[this.rear]
+						this.arr[this.rear] = null
+						this.rear--
+						this.customerNo--
+						this.numEl--
+						
+					},
+					elToDraw(index){
+						const {type, front, rear, arr} = this
+						
+						if(type === "linear"){
+							return front <= index-1 && index-1 < rear
+						}
+						else{
+							if(this.isEmpty){
+								return false
+							}
+							else if(this.isFull){
+								return true
+							}
+							else if(front < rear){
+								return front <= index-1 && index-1 < rear
+							}
+							else{
+								return front <= index-1 || index-1 < rear
+							}
+						}
+					}
+				
+				}
+			})
+
+		</script>
+		
+		
+	</body>
+</html>

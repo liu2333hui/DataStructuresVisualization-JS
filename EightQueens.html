@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Eight Queens</title>
+		<link rel="stylesheet" href="layui/css/layui.css" />
+		<script src="js/jquery-1.11.0.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		
+		<style>
+			.smallTable{
+				width:600px;
+			}
+			.layui-main{
+				text-align: center;
+				padding: 10px;
+				border: 3px solid;
+				border-radius:6px;
+				background:aqua;
+				font-size:30px;
+				height:50px;
+			}
+			.returnBtn{
+				position:fixed;
+				left:0px;
+				bottom:0px;
+			}
+			.block{
+				width:30px;
+				height:30px;
+				border: 1px black solid;
+				position:fixed;
+				background: gold;
+			}
+			.coloredBlock{
+				background: aqua;
+			}
+			
+			.gridcontainer{
+				position:relative;
+				margin-left: 300px;
+				margin-top:50px;
+			}
+			.sol-nav{
+				margin-left:25px;
+			}
+			h1{
+				text-align:center;
+			}
+		</style>
+		
+	</head>
+	<body>
+		
+		
+    		
+		
+		
+		<div id="path">
+			<a class="layui-btn layui-btn-danger returnBtn" href="./index.html">Ret to home pg</a>
+			
+			<h1>Eight queens - solutions to the problem</h1>
+			
+			
+			<!--{{路}}
+			
+			{{checkDirectRoute(8,8)}}
+			-->
+			<div class="gridcontainer">
+				
+				<div class="sol-nav">
+					
+					<input class="layui-btn" type="button" value="prev"
+						@click="prevNum"></input>
+					<span>solution {{solnNum}}</span>
+					<input class="layui-btn" type="button" value="next"
+						@click="nextNum"></input>
+				
+				</div>
+				
+				<br />
+				
+			<div v-for="i in gridDim">
+				
+				<div v-for="j in gridDim">
+					
+					<div class="block" 
+						:class="{coloredBlock: checkIndex(i,j)}"
+						:style="{'margin-left': (j-1)*boxSize+'px',  'margin-top':(i-1)*boxSize+'px'}">
+						<!--{{selectedCheck(i,j)}}-->
+
+						
+						<!--{{i}}{{j}}-->
+					</div>
+					
+				</div>
+				
+			</div>
+
+
+			</div>
+    		
+		</div>
+		
+		<script>
+			
+			var pathtracerlogic = new Vue({
+				el: "#path",
+				data:{
+					boxSize: 30,
+					gridDim: 8,
+					solnNum: 1,
+					totalSolnNum:10//fake soln num
+				},
+				mounted(){
+					
+				},
+				
+				methods:{
+					prevNum(){
+						
+						this.solnNum--;
+						if(this.solnNum == 0){
+							this.solnNum = this.totalSolnNum;
+						}
+					},
+					nextNum(){
+						
+						
+						this.solnNum++;
+						if(this.solnNum == this.totalSolnNum+1){
+							this.solnNum = 1;
+						}
+					},
+					checkIndex(i,j){
+						
+						if((i + j) % 2 == 0){
+							return false;
+						}
+						
+						return true;
+					}
+
+						
+				}
+			})
+			
+			
+		</script>
+		
+		
+	</body>
+</html>

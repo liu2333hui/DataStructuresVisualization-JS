@@ -5,10 +5,66 @@
 		<title></title>
 		<script></script>
 		<link rel="stylesheet" href="layui/css/layui.css" />
+			
+			<style type="text/css">
+				a{
+					animation: myfirst 3s;
+					-webkit-animation:myfirst 3s;
+					
+					margin:10px;
+				}
 				
+				@keyframes myfirst
+				{
+					from {margin-top: 500px}
+					to {margin-top:0px}
+				}
+				
+				@-webkit-keyframes myfirst
+				{
+					from {margin-top: 500px}
+					to {margin-top:0px}
+				}
+			</style>
+			
 	</head>
 	<body>
+		
 		<a class="layui-btn" href="./ArrayQueue.html">ArrayQueue Demo</a>
 		<a class="layui-btn" href="./SingleLinkedList.html">SingleLinkedList Demo</a>
+		<a class="layui-btn" href="./CircularLinkedList.html">CircularLinkedList Demo - Elementary roundabout game</a>
+		<a class="layui-btn" href="./ArrayStack.html">ArrayStack Demo</a>
+		<a class="layui-btn" href="./InfixCalculator.html">ArrayStack in-fix calculator Demo</a>
+		<a class="layui-btn" href="./PathTracer.html">Path tracer using recursion</a>
+	
+	
+		<a class="layui-btn" href="./EightQueens.html">Eight Queens </a>
+	
+	
+	
 	</body>
+	
+	
+	
+	<script>
+		
+		window.onload = function(){
+			
+			var aArr = document.getElementsByTagName("a");
+			aArr = [].slice.call(aArr)
+			
+			
+			aArr.forEach(el => {
+				console.log(el)
+				
+			})
+			
+			
+			
+		}
+		
+		
+		
+		
+	</script>
 </html>

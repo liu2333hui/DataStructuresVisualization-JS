@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>ArrayStack Calculator Demo</title>
+		<link rel="stylesheet" href="layui/css/layui.css" />
+		<script src="js/jquery-1.11.0.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		
+		<style>
+			.smallTable{
+				width:600px;
+			}
+			.layui-main{
+				text-align: center;
+				padding: 10px;
+				border: 3px solid;
+				border-radius:6px;
+				background:aqua;
+				font-size:30px;
+				height:50px;
+			}
+			.returnBtn{
+				position:fixed;
+				left:0px;
+				bottom:0px;
+			}
+			.block{
+				width:30px;
+				height:30px;
+				border: 1px black solid;
+				position:fixed;
+				
+			}
+			.gridcontainer{
+				
+				margin-left: 300px;
+			}
+			.墙样式{
+				background:red;
+				border: red;
+			}
+			.selected{
+				background:blue;
+				border:1px blue solid;
+				border-radius:15px;
+			}
+			.current{
+				background:green;
+			}
+			.selectedblock{
+				position:absolute;
+				margin-left:5px;
+				margin-top:5px;
+				background:blue;
+				width:20px;
+				height:20px;
+			}
+
+		</style>
+		
+	</head>
+	<body>
+		
+		
+    		
+		
+		
+		<div id="path">
+			<a class="layui-btn layui-btn-danger returnBtn" href="./index.html">Ret to home pg</a>
+			
+			
+			<!--{{路}}
+			
+			{{checkDirectRoute(8,8)}}
+			-->
+			<div class="gridcontainer">
+				
+			
+			<div v-for="i in gridDim">
+				
+				<div v-for="j in gridDim">
+					
+					<div class="block" 
+						:class="{
+							墙样式: 查墙(i,j),
+							current: currentCheck(i,j),
+							
+							}"
+						 @click="update点(i,j)"
+						:style="{'margin-left': (j-1)*boxSize+'px',  'margin-top':(i-1)*boxSize+'px'}">
+						<!--{{selectedCheck(i,j)}}-->
+						
+							<div class="selectedblock"
+								:class="{selected: selectedCheck(i,j)}"
+								v-if="selectedCheck(i,j)">
+								
+								
+							</div>
+						
+						
+						<!--{{i}}{{j}}-->
+					</div>
+					
+				</div>
+				
+			</div>
+
+
+			</div>
+    		
+		</div>
+		
+		<script>
+			
+			var pathtracerlogic = new Vue({
+				el: "#path",
+				data:{
+					expression: null,
+					automating: true,
+					boxSize: 30,
+					gridDim: 10,
+					点:{
+						i:3,
+						j:3
+					},
+					此:{
+						i:2,
+						j:2
+					},
+					墙:{
+						i:[5,5,5,5,5,6,6,4,4,4,4,3,2,1],
+						j:[1,2,3,4,5,5,4,3,13,20,11,6,5,6]
+					},
+					路:{
+						i:[],
+						j:[]
+					},
+					图:null,
+					startInterval:false,
+					路线: null
+					
+				},
+				mounted(){
+					
+					var _this = this;
+					
+					setInterval(function(){
+						
+						if(_this.startInterval){
+							if(_this.路线.length != 0){
+								var next = _this.路线.pop();
+								_this.此.i = next[0] + 1
+								_this.此.j = next[1] + 1
+							}
+							
+						}
+						
+						
+						
+						
+						
+					},200)
+					
+				},
+				
+				methods:{
+					update点(i,j){
+						
+						
+						if(this.查墙(i,j)){
+							return
+						}
+						
+						this.点.i = i;
+						this.点.j = j;
+						
+						this.路 = {i:[],j:[]};
+						
+						this.startInterval = false;
+						
+						
+						
+						
+						
+//						console.log(this.图[1])
+
+						this.newMap();
+						var 路途 = new Array()
+						var found = this.findPath(路途,this.此.i-1,this.此.j-1);
+						路途.shift();
+						
+//						console.log(路途)
+						this.newMap();
+						var 路途2 = new Array()
+						var found = this.findPath2(路途2,this.此.i-1,this.此.j-1);
+						路途2.shift();
+						
+						this.newMap();
+						var 路途3 = new Array()
+						var found = this.findPath3(路途3,this.此.i-1,this.此.j-1);
+						路途3.shift();
+						
+						this.newMap();
+						var 路途4 = new Array()
+						var found = this.findPath4(路途4,this.此.i-1,this.此.j-1);
+						路途4.shift();
+						
+						this.newMap();
+						var 路途5 = new Array()
+						var found = this.findPath5(路途5,this.此.i-1,this.此.j-1);
+						路途5.shift();
+						
+						this.newMap();
+						var 路途6 = new Array()
+						var found = this.findPath6(路途6,this.此.i-1,this.此.j-1);
+						路途6.shift();
+						
+						this.newMap();
+						var 路途7 = new Array()
+						var found = this.findPath7(路途7,this.此.i-1,this.此.j-1);
+						路途7.shift();
+						
+						this.newMap();
+						var 路途8 = new Array()
+						var found = this.findPath8(路途8,this.此.i-1,this.此.j-1);
+						路途8.shift();
+						
+						this.newMap();
+						var 路途9 = new Array()
+						var found = this.findPath9(路途9,this.此.i-1,this.此.j-1);
+						路途9.shift();
+						
+						this.newMap();
+						var 路途10 = new Array()
+						var found = this.findPath10(路途10,this.此.i-1,this.此.j-1);
+						路途10.shift();
+						
+						this.newMap();
+						var 路途11 = new Array()
+						var found = this.findPath11(路途11,this.此.i-1,this.此.j-1);
+						路途11.shift();
+						
+						this.newMap();
+						var 路途12 = new Array()
+						var found = this.findPath12(路途12,this.此.i-1,this.此.j-1);
+						路途12.shift();
+						
+						this.newMap();
+						var 路途13 = new Array()
+						var found = this.findPath13(路途13,this.此.i-1,this.此.j-1);
+						路途13.shift();
+						
+						this.newMap();
+						var 路途14 = new Array()
+						var found = this.findPath14(路途14,this.此.i-1,this.此.j-1);
+						路途14.shift();
+						
+						this.newMap();
+						var 路途15 = new Array()
+						var found = this.findPath15(路途15,this.此.i-1,this.此.j-1);
+						路途15.shift();
+						
+						this.newMap();
+						var 路途16 = new Array()
+						var found = this.findPath16(路途16,this.此.i-1,this.此.j-1);
+						路途16.shift();
+						
+						this.newMap();
+						var 路途17 = new Array()
+						var found = this.findPath17(路途17,this.此.i-1,this.此.j-1);
+						路途17.shift();
+						
+						this.newMap();
+						var 路途18 = new Array()
+						var found = this.findPath18(路途18,this.此.i-1,this.此.j-1);
+						路途18.shift();
+						
+						this.newMap();
+						var 路途19 = new Array()
+						var found = this.findPath19(路途19,this.此.i-1,this.此.j-1);
+						路途19.shift();
+						
+						this.newMap();
+						var 路途20 = new Array()
+						var found = this.findPath20(路途20,this.此.i-1,this.此.j-1);
+						路途20.shift();
+						
+						this.newMap();
+						var 路途21 = new Array()
+						var found = this.findPath21(路途21,this.此.i-1,this.此.j-1);
+						路途21.shift();
+						
+						this.newMap();
+						var 路途22 = new Array()
+						var found = this.findPath22(路途22,this.此.i-1,this.此.j-1);
+						路途22.shift();
+						
+						this.newMap();
+						var 路途23 = new Array()
+						var found = this.findPath23(路途23,this.此.i-1,this.此.j-1);
+						路途23.shift();
+						
+						this.newMap();
+						var 路途24 = new Array()
+						var found = this.findPath24(路途24,this.此.i-1,this.此.j-1);
+						路途24.shift();
+						
+//						console.log("____")
+//						console.log(this.图)
+//						console.log(路途)
+//						console.log(路途2)
+//						console.log(路途3)
+//						console.log(路途4)
+//						console.log(路途)
+//						console.log(路途2)
+//						console.log(路途3)
+//						console.log(路途4)
+						
+						var 路组 = new Array();
+						路组.push(路途)
+						路组.push(路途2)
+						路组.push(路途3)
+						路组.push(路途4)
+						路组.push(路途5)
+						路组.push(路途6)
+						路组.push(路途7)
+						路组.push(路途8)
+						路组.push(路途9)
+						路组.push(路途10)
+						路组.push(路途11)
+						路组.push(路途12)
+						路组.push(路途13)
+						路组.push(路途14)
+						路组.push(路途15)
+						路组.push(路途16)
+						路组.push(路途17)
+						路组.push(路途18)
+						路组.push(路途19)
+						路组.push(路途20)
+						路组.push(路途21)
+						路组.push(路途22)
+						路组.push(路途23)
+						路组.push(路途24)
+						
+						var indexMin = 0;
+						var valMin = 9999;
+						for(var index = 0; index < 路组.length; index++){
+							if(路组[index].length <= valMin){
+								indexMin = index;
+								valMin = 路组[index].length
+							}
+						}
+						
+						console.log(valMin, indexMin)
+						console.log(路组[indexMin])
+						
+						this.路线 = 路组[indexMin]
+//						console.log(this.图)
+						this.startInterval = true;
+					},
+					图至路(){
+						var 路途 = new Array();
+						
+						var 头 = {i:this.此.i - 1, j:this.此.j - 1}
+						
+						
+						var prev = {i: 0, j:0}
+						
+						while(!((头.i == this.点.i - 1) && (头.j == this.点.j - 1))){
+//							console.log("here")
+							this.图[头.i][头.j] = 4;
+							if(this.图[头.i + 1][头.j] == 2 ){
+								
+								头.i++; 
+								
+								
+							}
+							else if(this.图[头.i -1][头.j] == 2){
+								
+								头.i--; 
+							}
+							else if(this.图[头.i ][头.j+1] == 2 ){
+								
+								头.j++; 
+							}
+							else if(this.图[头.i ][头.j-1] == 2 ){
+								
+								头.j--; 
+							}else{
+								return null
+							}
+							
+							路途.push([头.i,头.j])
+						}
+						
+						return 路途;
+						
+					},
+					newMap(){
+													/*
+							 * 新的地图
+							 */
+							this.图 = new Array(this.gridDim);
+							for(var index = 0; index < this.gridDim; index++){
+								this.图[index] = new Array(this.gridDim);
+							}
+//							console.log(this.图);
+							
+							
+							
+							//Load wall data
+							for(var index = 1; index <= this.gridDim; index++){
+								for(var indexj = 1; indexj <= this.gridDim; indexj++){
+									
+									if(this.查墙(index,indexj)){
+										
+										this.图[index-1][indexj-1] = 3;
+									}else{
+										
+										this.图[index-1][indexj-1] = 0;
+									}
+									
+								}
+						}
+					},
+					checkDirectRoute(i,j){
+						
+						//debug
+						return false
+						
+						i--;
+						j--;
+						
+						var clear = true;
+						
+						
+						while( !(i == this.点.i-1 && j == this.点.j-1)){
+							if(this.点.i -1 -i > 0){
+								if(this.查墙(i+1,j)){
+									return false;
+								}else{
+									i++;
+								}
+							}
+							
+							//下
+							if(this.点.i-1 -i < 0){
+								if(this.查墙(i-1,j)){
+									return false;
+								}else{
+									i--;
+									
+								}
+							}
+							
+							//左
+							if(this.点.j-1 - j < 0){
+								if(this.查墙(i,j-1)){
+									return false;
+								}else{
+									j--;
+									
+								}
+								
+							}
+							
+							//右
+							if(this.点.j -1- j > 0){
+								if(this.查墙(i,j+1)){
+									return false;
+								}else{
+									j++;
+									
+								}
+								
+							}
+						}
+							
+						
+						
+						return clear;
+						
+						
+					},
+
+
+					addDirectRoute(路,i,j){
+//						console.log(this.点.i -1,this.点.j -1)
+//						re//turn null;
+						
+						var temp = new Array();
+						
+						while( !(i == this.点.i -1&& j == this.点.j-1)){
+							
+						
+							
+							//下
+							 if(this.点.i-1 -i < 0){
+							 	
+								i--;
+								
+								temp.push([i,j])
+							}
+							
+							//左
+							 if(this.点.j-1 - j < 0){
+								
+									j--;
+								
+							temp.push([i,j])
+							}
+							
+							//右
+							 if(this.点.j-1 - j > 0){
+								
+									j++;
+								
+							temp.push([i,j])
+							}
+							 
+							 	
+							//上
+							if(this.点.i-1 - i > 0){
+								
+								
+								i++;
+								
+								temp.push([i,j])
+								
+							}
+						}
+//						路.push([this.点.i,this.点.j])
+//						路.push([this.点.i-1,this.点.j-1])
+						路.push([this.点.i-1,this.点.j-1])
+						while(temp.length != 0){
+							
+							路.push(temp.pop())
+						}
+//						路.pop();
+//						路.shift();
+					},
+
+
+						/*
+					 * 
+					 *下，右，上, 左
+					 */
+					findPath(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+//								if(this.checkDirectRoute(路,i,j)){
+//									return true;
+//								}
+
+								if(this.checkDirectRoute(i,j)){
+//									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								
+								
+								
+								//试一下上
+								if(this.findPath(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								else if(this.findPath( 路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+								else if(this.findPath(路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								else if(this.findPath(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					findPath2(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+								
+								
+								if(this.checkDirectRoute(i,j)){
+//									//c
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								
+								//试一下上
+								if(this.findPath2( 路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+								else if(this.findPath2(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								 else if(this.findPath2(路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								else if(this.findPath2(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}
+								
+								
+								
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+					findPath3(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+								//试一下上
+								
+								
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								
+								if(this.findPath3(路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								else if(this.findPath3(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								else if(this.findPath3( 路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+								
+								else if(this.findPath3(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+					findPath4(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+								//下
+								
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								
+								 if(this.findPath4(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}
+								else if(this.findPath4(路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								
+								else if(this.findPath4(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								//
+								else if(this.findPath4( 路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					findPath5(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//上
+								if(this.findPath5(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}//左
+								else if(this.findPath5(路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								
+								//右
+								else if(this.findPath5( 路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+								//下
+								else if(this.findPath5(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					findPath6(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//上
+								if(this.findPath6(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}
+								
+								//右
+								else if(this.findPath6( 路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+								//左
+								else if(this.findPath6(路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								//下
+								else if(this.findPath6(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+					
+					findPath7(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//上
+								if(this.findPath7(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}
+								
+								//右
+								else if(this.findPath7( 路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+								//下
+								else if(this.findPath7(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								//左
+								else if(this.findPath7(路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+					
+					findPath8(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//上
+								if(this.findPath8(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}
+								
+								//下
+								else if(this.findPath8(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								
+								//右
+								else if(this.findPath8( 路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+								
+								//左
+								else if(this.findPath8(路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+										
+					findPath9(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//上
+								if(this.findPath9(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}
+								
+								//下
+								else if(this.findPath9(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								
+								//右
+								else if(this.findPath9( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								
+								//左
+								else if(this.findPath9(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+					
+										
+					findPath10(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//下
+								 if(this.findPath10(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								 
+								 
+								//左
+								else if(this.findPath10(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+								//上
+								else if(this.findPath10(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}
+								
+								
+								
+								//右
+								else if(this.findPath10( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+				findPath11(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//下
+								 if(this.findPath11(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								 
+								 
+								
+								//上
+								else if(this.findPath11(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}
+								
+								
+								
+								//右
+								else if(this.findPath11( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								
+								//左
+								else if(this.findPath11(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+								
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+					
+				findPath12(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//下
+								 if(this.findPath12(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								 
+								 
+								
+								//上
+								else if(this.findPath12(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}
+								
+								
+								//左
+								else if(this.findPath12(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+								
+								//右
+								else if(this.findPath12( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+				findPath13(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//下
+								 if(this.findPath13(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								 
+								 
+								
+								
+								//右
+								else if(this.findPath13( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								
+								//左
+								else if(this.findPath13(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+
+								//上
+								else if(this.findPath13(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}
+								
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+					
+					findPath14(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//下
+								 if(this.findPath14(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								 
+								 
+								
+								
+								//右
+								else if(this.findPath14( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								
+
+								//上
+								else if(this.findPath14(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}
+								
+								//左
+								else if(this.findPath14(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+								
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					findPath15(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							
+							
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//左
+								if(this.findPath15(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}
+								
+								//下
+								else if(this.findPath15(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+
+								//上
+								else if(this.findPath15(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}					
+								//右
+								else if(this.findPath15( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								
+								
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					findPath16(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							
+							
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//左
+								if(this.findPath16(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}							
+								
+								//上
+								else if(this.findPath16(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}			
+								
+								//下
+								else if(this.findPath16(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+		
+								//右
+								else if(this.findPath16( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								
+								
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+				findPath17(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							
+							
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//左
+								if(this.findPath17(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}							
+								
+									//下
+								else if(this.findPath17(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								
+								//上
+								else if(this.findPath17(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}			
+								//右
+								else if(this.findPath17( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								
+								
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+					
+				findPath18(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							
+							
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//左
+								if(this.findPath18(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}							
+								
+									//下
+								else if(this.findPath18(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								
+								//右
+								else if(this.findPath18( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								
+								//上
+								else if(this.findPath18(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}			
+								
+								
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+					findPath19(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							
+							
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//左
+								if(this.findPath19(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}							
+								
+								//上
+								else if(this.findPath19(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}			
+								
+								
+		
+								//右
+								else if(this.findPath19( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}
+								//下
+								else if(this.findPath19(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					findPath20(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							
+							
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+									//右
+								 if(this.findPath20( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}					
+								
+								//下
+								else if(this.findPath20(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+									
+								//上
+								else if(this.findPath20(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}			
+								
+								//左
+								else if(this.findPath20(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}	
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+					
+					findPath21(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							
+							
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+									//右
+								 if(this.findPath21( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}					
+								
+								
+									
+								//上
+								else if(this.findPath21(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}			
+								
+								//左
+								else if(this.findPath21(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}	
+								//下
+								else if(this.findPath21(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+					findPath22(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							
+							
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+									//右
+								 if(this.findPath22( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}					
+								
+								
+									
+								//上
+								else if(this.findPath22(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}			
+								//下
+								else if(this.findPath22(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								//左
+								else if(this.findPath22(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}	
+								
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+						
+					findPath23(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							
+							
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+									//右
+								 if(this.findPath23( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}					
+								
+									//左
+								else if(this.findPath23(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}	
+									
+								//上
+								else if(this.findPath23(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}			
+								//下
+								else if(this.findPath23(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+							
+								
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+							
+					findPath24(路,i,j){
+//						console.log(i,j,this.图[i][j])
+//						console.log(this.图)
+						//到达目的地
+						if(this.图[this.点.i-1][this.点.j-1] == 2){
+							//路.push([this.点.i-1,this.点.j-1])
+							return true;
+						}
+						
+						else{
+							
+							
+							if(this.图[i][j] == 0){
+								this.图[i][j] = 2;
+								
+							
+								if(this.checkDirectRoute(i,j)){
+									//
+									this.addDirectRoute(路,i,j);
+									
+									return true;
+								}
+								//右
+								 if(this.findPath24( 路,i, j-1)){
+									路.push([i,j-1])
+									return true;
+								}					
+								
+								//左
+								else if(this.findPath24(路,i, j+1)){
+									路.push([i,j+1])
+									return true;
+								}	
+								
+								//下
+								else if(this.findPath24(路, i+1, j)){
+									路.push([i+1,j])
+									return true;
+								}
+								//上
+								else if(this.findPath24(路,i-1, j)){
+									路.push([i-1,j])
+									return true;
+								}			
+								
+							
+								
+								
+								else{
+									this.图[i][j] = 1;
+									return false;
+								}
+								
+								
+								
+							}else{ //1 <= blocked
+								return false;
+							}
+						}
+						
+					},
+					
+					
+					selectedCheck(i,j){
+						if(i == this.点.i && j == this.点.j)
+						{
+							return true;
+						}
+						else{
+							return false;
+						}
+					},
+					currentCheck(i,j){
+//						console.log(i,j)
+						
+						if(i == this.此.i && j == this.此.j)
+						{
+							return true;
+						}
+						else{
+							return false;
+						}
+					},
+					查墙(i,j){
+						
+						if(i == 1){
+							return true;
+						}
+						if(j==1){
+							return true;
+						}
+						if(i == this.gridDim ){
+							return true;
+						}
+						if(j == this.gridDim ){
+							return true;
+						}
+						
+						for(var index = 0; index < this.墙.i.length; index++){
+							if(i == this.墙.i[index] && j == this.墙.j[index])
+								{
+									return true;
+								}
+						
+						}
+						
+						return false;
+					},
+					自查墙(i,j,_this){
+						for(var index = 0; index < _this.墙.i.length; index++){
+							if(i == _this.墙.i[index] && j == _this.墙.j[index])
+								{
+									return true;
+								}
+						
+						}
+						
+						return false;
+					}
+
+
+					/*
+					 * Put the parser here to calculate
+					 * the numerical expression
+					 */
+				}
+			})
+			
+			
+		</script>
+		
+		
+	</body>
+</html>

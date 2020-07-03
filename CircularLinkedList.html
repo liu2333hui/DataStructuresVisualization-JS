@@ -36,7 +36,7 @@
 			<a class="layui-btn layui-btn-danger returnBtn" href="./index.html">Ret to home pg</a>
 			
 			<div>
-				<h2 class="layui-main"> Single LinkedList Demo (6.14.2020)</h2>
+				<h2 class="layui-main"> Circular LinkedList Demo (6.14.2020)</h2>
 				<br />
 			</div>
 			
@@ -124,7 +124,11 @@
 			</div>
 			
 			<div class="layui-inline layui-form">
-				<button class="layui-btn" @click="reverseList()">Reverse linked list</button>
+				<div class="layui-form-item">
+					<label for="skipInterval">skipInterval</label>
+					<input type="text" class="skipInterval " v-model="skipInterval"/>
+				</div>
+				<button class="layui-btn" @click="activateTimer()">Josephu round-about delete</button>
 			</div>
 			
 			<!--other data-->
@@ -154,6 +158,14 @@
     					<td>last inserted Index</td>
     					<td>{{lastInsertedIndex}}</td>
     				</tr>
+    				<tr>
+    					<td>delete timer started</td>
+    					<td>{{timer}}</td>
+    				</tr>
+    				<tr>
+    					<td>roundabout Index</td>
+    					<td>{{roundaboutIndex}}</td>
+    				</tr>
     				<!--<tr v-for="n in listLength">
     					<td>{{getNode(n)}}</td>
     					<td>Another node</td>
@@ -172,7 +184,12 @@
 			<ul id="visualBlock" :style="visualBlock">
 				<div v-for="n in listLength" >
 					<li>
-						<div v-if="n === lastInsertedIndex && inserting" class="layui-anim layui-anim-rotate" :style="highlightedVisual">			
+						<div v-if="n === roundaboutIndex && timer" class="" :style="roundaboutVisual">			
+							{{getNode(n).no}}:{{getNode(n).name}}
+							<br />
+							{{getNode(n).nickname}}
+						</div>
+						<div v-else-if="n === lastInsertedIndex && inserting" class="layui-anim layui-anim-rotate" :style="highlightedVisual">			
 							{{getNode(n).no}}:{{getNode(n).name}}
 							<br />
 							{{getNode(n).nickname}}
@@ -229,6 +246,16 @@
 						"border-radius": "13px",
 						color:"gray"
 					},
+					roundaboutVisual:{
+						background:"lightgreen",
+						
+						border:"1px solid orange",
+						height:"39px",
+						width:"120px",
+						"text-align": "center",
+						"border-radius": "13px",
+						color:"gray"
+					},
 					highlightedVisual:{
 						background:"lightblue",
 						
@@ -254,6 +281,11 @@
 						right:"50px",
 						top:"100px"
 					},
+					timer: false,
+					timerObject: null,
+					roundaboutIndex: 1,
+					timerCounter: 0,
+					skipInterval: 3
 				},
 				computed:{
 					toAddNo:function(){
@@ -273,6 +305,97 @@
 					}
 				},
 				methods:{
+					activateTimer(){
+						this.timer = !this.timer;
+						if(this.timer === true){
+							this.roundaboutIndex = 1
+							this.timerCounter = 0
+							
+							timerObject = setInterval(
+								function(){
+									
+									vm.inserting = false;
+									vm.updating = false;
+									
+									//console.log("yo")
+									
+									//loop linked list
+									vm.roundaboutIndex++;
+									if(vm.roundaboutIndex <= vm.listLength){
+										//Do nothing
+									}
+									else{
+										vm.roundaboutIndex = 1;
+									}
+									
+									
+									vm.timerCounter++;
+									if(vm.timerCounter % vm.skipInterval === 0){
+										vm.timerCounter = 0;
+										console.log("yo")
+										//Delete the current node
+										//Three cases + one case
+										
+										vm.deleteElementByRoundaboutIndex();
+									}
+									
+								}
+							,1000)
+						}else{
+							clearInterval(timerObject);
+							timerObject = null;
+						}
+					},
+					deleteElementByRoundaboutIndex(){
+						this.inserting = false;
+						this.updating = false;
+						
+						var no = this.roundaboutIndex;
+							
+						if(this.listLength === 1){
+							//alert("cannot delete head!")
+							return;
+						}
+//						console.log(this.headNode.no, no)
+						if(parseInt(1) === parseInt(no)){
+							this.headNode = this.headNode.next;
+							this.listLength--;
+							return;
+						}
+						
+						var prevNode = this.headNode;
+						
+						var currentNode = this.headNode.next;
+						var currentNo = currentNode.no;
+						
+						var currentIndex = 2;
+						
+						while(parseInt(currentIndex) != parseInt(no)){
+							if(currentNode.next === null){
+								break;
+							}
+							else{
+								prevNode = currentNode;
+								
+								currentNode = currentNode.next;
+								currentNo = currentNode.no;
+								
+								currentIndex++;
+								
+							}
+						}
+						
+//						console.log('here')
+//						console.log(currentNo, no);
+						if(parseInt(currentIndex) === parseInt(no)){
+							
+							prevNode.next = prevNode.next.next;
+							this.listLength--;
+						}else{
+							//nothing to do, can't find
+							alert('no element exists');
+						}
+					},
 					reverseList(){
 						console.log("here")
 						this.inserting = false;
@@ -362,7 +485,6 @@
 							//nothing to do, can't find
 							alert('no element exists');
 						}
-						
 						
 					},
 					deleteNodeByNo(no){
