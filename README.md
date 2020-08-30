@@ -2,5 +2,5 @@
 
 To view the project demonstrations (linked list, array queue, stack, etc.), go to index.html first. Then select the project demo you wish to view!
 
-The demo can be viewed at [gitlab pages]{https://xanthippe666.github.io/index.html}
+The demo can be viewed at [gitlab pages](https://xanthippe666.github.io/index.html)
 
